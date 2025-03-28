@@ -19,11 +19,11 @@ export default function Transfers() {
       <Pressable>
         <Button
           title="matches"
-          onPress={() => {}}
+          onPress={() => router.push('./matches')}
         />
       </Pressable>
     </Link>
-    <Text onPress={() => router.push('/matches')}>Go matches</Text>
+    <Text onPress={() => router.push('./matches')}>Go matches</Text>
     </View>
   );
 }
