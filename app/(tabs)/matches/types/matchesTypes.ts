@@ -55,3 +55,12 @@ export interface Match {
     };
   };
 }
+
+export interface MatchDate {
+  dateString: string;
+  timestamp: number;
+  day: number;
+  month: number;
+  year: number;
+
+}

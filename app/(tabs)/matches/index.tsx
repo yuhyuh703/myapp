@@ -1,29 +1,40 @@
-import { View, Pressable, SectionList } from "react-native";
+import { View, Pressable, SectionList, StyleSheet } from "react-native";
 import { List, Card, Divider, Text, Button } from "react-native-paper";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { useEffect, useState } from "react";
-import { Match } from "./types/matchesTypes";
+import { useEffect, useState,  useCallback, useMemo, useRef  } from "react";
+import { Match, MatchDate } from "./types/matchesTypes";
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 
 
-const URL = "https://v3.football.api-sports.io/fixtures";
-const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
-const API_URL = `${URL}?date=${today}`;
-const API_KEY = "ab47b5280ce2161a4699fd720347734c";
 
 
 export default function Matches() {
-
+  
   const [matches, setMatches] = useState<{ title: string; data: Match[] }[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  //const [date, setDate] = useState<string>;
+  const [date, setDate] = useState<string | null>(null);
+
+
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
+  // callbacks
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log('handleSheetChanges', index);
+  }, []);
 
   useEffect(() => {
     console.log("Matches component mounted");
-    fetchMatches();
+    setDate( new Date().toISOString().split("T")[0]);
+    fetchMatches(date);
   }, []);
 
-  const fetchMatches = async () => {
+  const fetchMatches = async (date: string | null) => {
+    const URL = "https://v3.football.api-sports.io/fixtures";
+   
+    const API_URL = `${URL}?date=${date}`;
+    const API_KEY = "ab47b5280ce2161a4699fd720347734c";
     try {
       const response = await fetch(API_URL, {
         method: "GET",
@@ -59,19 +70,15 @@ export default function Matches() {
   
  
   return (
-
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        alignSelf: "stretch",
-      }}
-      
-    >
-      
+      <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>
       <SafeAreaView>
+        <Button
+        children='calendar'
+        onPress={() => {bottomSheetRef.current?.snapToIndex(0)}}
+        >
+
+        </Button>
         <SectionList
           sections={matches.slice(0, 5)} // Display only the first 5 leagues
           keyExtractor={(item) => item.fixture.id.toString()}
@@ -94,9 +101,41 @@ export default function Matches() {
           )}
           ItemSeparatorComponent={() => <Divider />}
         />
+
+      
+        <BottomSheet
+          ref={bottomSheetRef}
+          snapPoints={['25%', '50%', '90%']}
+          onChange={handleSheetChanges}
+          index={-1}
+        >
+          <BottomSheetView style={styles.contentContainer}>
+          <Calendar
+            onDayPress={(day: MatchDate) => {
+              console.log('selected day', day);
+              bottomSheetRef.current?.close();
+              fetchMatches(day.dateString);
+            }}
+          />
+          </BottomSheetView>
+        </BottomSheet>
+      
       </SafeAreaView>
     </SafeAreaProvider>
+    </GestureHandlerRootView>
       
-    </View>
   );
 }
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  contentContainer: {
+    flex: 1,
+    padding: 36,
+    alignItems: 'center',
+  },
+});
