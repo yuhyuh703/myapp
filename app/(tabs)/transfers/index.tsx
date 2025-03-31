@@ -5,6 +5,24 @@ import { useRouter } from 'expo-router';
 
 
 export default function Transfers() {
+
+fetch("https://v3.football.api-sports.io/transfers?team=33", {
+	"method": "GET",
+	"headers": {
+		"x-rapidapi-host": "v3.football.api-sports.io",
+		"x-rapidapi-key": "ab47b5280ce2161a4699fd720347734c"
+	}
+})
+.then(response => {
+  const data = response.json();
+	console.log(data);
+})
+.catch(err => {
+	console.log(err);
+});
+
+
+
   const router = useRouter();
   return (
     <View
@@ -14,7 +32,7 @@ export default function Transfers() {
         alignItems: "center",
       }}
     >
-      <Text>Edit app/list.tsx to edit this screen.</Text>
+      <Text>Edit app/transfers.tsx to edit this screen.</Text>
       <Link href="/matches" asChild>
       <Pressable>
         <Button

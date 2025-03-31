@@ -5,7 +5,7 @@ export default function Layout() {
   return (
    <Tabs>
     <Tabs.Screen name="matches" options={{headerShown: false}}/>
-    <Tabs.Screen name="transfers" />
+    <Tabs.Screen name="transfers" options={{headerShown: false}}/>
    </Tabs>
   );
 }

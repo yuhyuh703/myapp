@@ -2,7 +2,7 @@ import { View, Pressable, SectionList, StyleSheet } from "react-native";
 import { List, Card, Divider, Text, Button } from "react-native-paper";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState,  useCallback, useMemo, useRef  } from "react";
-import { Match, MatchDate } from "./types/matchesTypes";
+import { Match, MatchDate } from "../../types/matchesTypes";
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
